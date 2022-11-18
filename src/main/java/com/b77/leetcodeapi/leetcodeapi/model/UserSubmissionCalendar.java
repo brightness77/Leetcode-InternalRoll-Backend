@@ -12,9 +12,12 @@ import java.util.Map;
 @Data
 public class UserSubmissionCalendar {
 
+    private String accountName;
+
     private List<Submission> submissionList;
 
-    public UserSubmissionCalendar(){
+    public UserSubmissionCalendar(String accountName){
+        this.accountName = accountName;
         submissionList = new ArrayList<>();
     }
 
