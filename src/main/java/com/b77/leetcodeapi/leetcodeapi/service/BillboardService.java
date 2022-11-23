@@ -11,15 +11,18 @@ import java.util.*;
 @Service
 public class BillboardService {
 
+    private final String[] RANK_USERNAMES = new String[]{"wzhao37", "hailongl", "hugodai", "leap-code", "lynnromer"};
+
+
+
     @Autowired
     UserStatService userStatService;
 
 
 
-
     public BillboardReturn getTopKSubmissionAccount(int k){
 
-        String[] usernames = new String[]{"wzhao37", "hailongl", "hugodai", "leap-code", "lynnromer"};
+        String[] usernames = RANK_USERNAMES;
         List<UserSubmissionCalendar> calendars = new ArrayList<>();
 
         for(String username: usernames){
@@ -43,4 +46,5 @@ public class BillboardService {
 
         return billboardReturn;
     }
+
 }

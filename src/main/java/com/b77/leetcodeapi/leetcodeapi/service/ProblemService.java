@@ -1,8 +1,8 @@
 package com.b77.leetcodeapi.leetcodeapi.service;
 
 import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemEntry;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.TopicTagEntry;
 import com.b77.leetcodeapi.leetcodeapi.model.request.ProblemQueryRequest;
+import com.b77.leetcodeapi.leetcodeapi.service.leetcode.LeetcodeAPIService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -248,4 +248,80 @@ public class ProblemService {
     //temp hardcode part
     private List<ProblemEntry>[] allProblems = new List[3];
     private LocalDateTime[] allProblemsTimestamp = new LocalDateTime[3];
+
+
+    //tags
+    String[] topicTagsTemp = {"Merge Sort",
+            "Reservoir Sampling",
+            "String",
+            "Math",
+            "Segment Tree",
+            "Design",
+            "Game Theory",
+            "Hash Table",
+            "Backtracking",
+            "Matrix",
+            "Minimum Spanning Tree",
+            "Rolling Hash",
+            "Interactive",
+            "Tree",
+            "Line Sweep",
+            "Suffix Array",
+            "Combinatorics",
+            "Trie",
+            "Eulerian Circuit",
+            "Ordered Set",
+            "Binary Search Tree",
+            "Probability and Statistics",
+            "Recursion",
+            "Stack",
+            "Linked List",
+            "Binary Indexed Tree",
+            "Graph",
+            "Randomized",
+            "Brainteaser",
+            "Breadth-First Search",
+            "Union Find",
+            "Counting",
+            "Quickselect",
+            "Bitmask",
+            "Two Pointers",
+            "Heap (Priority Queue)",
+            "Doubly-Linked List",
+            "Rejection Sampling",
+            "Biconnected Component",
+            "Monotonic Queue",
+            "Strongly Connected Component",
+            "Dynamic Programming",
+            "Bit Manipulation",
+            "Divide and Conquer",
+            "Sliding Window",
+            "Topological Sort",
+            "Iterator",
+            "Hash Function",
+            "Bucket Sort",
+            "Greedy",
+            "Queue",
+            "Shortest Path",
+            "Data Stream",
+            "Enumeration",
+            "Depth-First Search",
+            "Binary Tree",
+            "String Matching",
+            "Prefix Sum",
+            "Binary Search",
+            "Sorting",
+            "Array",
+            "Geometry",
+            "Radix Sort",
+            "Simulation",
+            "Counting Sort",
+            "Monotonic Stack",
+            "Memoization",
+            "Number Theory",
+            "Database",
+            "Shell"};
+
+    List<String> topicTags = new ArrayList<>(Arrays.asList(topicTagsTemp));
+
 }

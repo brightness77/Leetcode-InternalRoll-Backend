@@ -1,5 +1,6 @@
-package com.b77.leetcodeapi.leetcodeapi.service;
+package com.b77.leetcodeapi.leetcodeapi.service.leetcode;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 
@@ -156,6 +157,7 @@ public class LeetcodeAPIService {
     /*
     Simple http request sender
      */
+
     private String sendHttpRequest(Request request){
         OkHttpClient client = new OkHttpClient().newBuilder().build();
 

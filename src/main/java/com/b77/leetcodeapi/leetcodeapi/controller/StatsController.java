@@ -1,7 +1,6 @@
 package com.b77.leetcodeapi.leetcodeapi.controller;
 
 import com.b77.leetcodeapi.leetcodeapi.model.UserSubmissionCalendar;
-import com.b77.leetcodeapi.leetcodeapi.service.LeetcodeAPIService;
 import com.b77.leetcodeapi.leetcodeapi.service.UserStatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
