@@ -14,11 +14,6 @@ import java.util.Map;
 public class LeetcodeAPIService {
 
     //config data
-    private final String[] CATEGORIES = {
-            "algorithms",
-            "database" ,
-            "shell"};
-
     private final String[] LANGS = {
             "bash",
             "c",
@@ -44,6 +39,7 @@ public class LeetcodeAPIService {
         put("login", "https://leetcode.com/accounts/login/");
         put("problems", "https://leetcode.com/api/problems/$category/");
         put("problem", "https://leetcode.com/problems/$slug/description/");
+        put("problemPrefix", "https://leetcode.com/problems/");
         put("test", "https://leetcode.com/problems/$slug/interpret_solution/");
         put("session", "https://leetcode.com/session/");
         put("submit", "https://leetcode.com/problems/$slug/submit/");
@@ -57,6 +53,10 @@ public class LeetcodeAPIService {
 
 
 
+
+    public String getProblemURLPrefix(){
+        return URLS.get("problemPrefix");
+    }
 
 
     /*
@@ -85,16 +85,31 @@ public class LeetcodeAPIService {
 
 
     public String getProblemByTitleSlug(String titleSlug){
-        String queryString = String.format("{ \"query\": \"query getQuestionDetail($titleSlug: String!) "
-                + "{ question(titleSlug: $titleSlug) "
-                + "{ questionId questionType canSeeQuestion title questionTitle content stats codeDefinition sampleTestCase enableRunCode metaData "
-                + "frequency "
-                + "topicTags { name } "
-                + "companyTags { name } "
-                + "solution { content } "
-                + "} "
-                + "}\" ,"
-                + "\"variables\": { \"titleSlug\": \"%s\" }}",
+        String queryString = String.format("{ \"query\": \"query getQuestionDetail($titleSlug: String!) " +
+                "{ question(titleSlug: $titleSlug) " +
+                "{ questionId " +
+                "questionFrontendId " +
+                "questionType " +
+                "canSeeQuestion " +
+                "difficulty " +
+                "title titleSlug " +
+                "content " +
+                "stats " +
+                "codeDefinition " +
+                "sampleTestCase " +
+                "enableRunCode " +
+                "metaData " +
+                "frequency " +
+                "likes " +
+                "dislikes " +
+                "similarQuestions " +
+                "submitUrl " +
+                "topicTags { name slug translatedName __typename } " +
+                "companyTags { name frequencies } " +
+                "solution { content } " +
+                "} " +
+                "}\" ," +
+                "\"variables\": { \"titleSlug\": \"%s\" }}",
                 titleSlug);
 
         //System.out.println("query string is " + queryString);
@@ -135,6 +150,7 @@ public class LeetcodeAPIService {
     public String queryFromGraphQL(String queryString){
 
         System.out.println("Queried from leetcode.com");
+        //System.out.println(queryString);
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(queryString, mediaType);

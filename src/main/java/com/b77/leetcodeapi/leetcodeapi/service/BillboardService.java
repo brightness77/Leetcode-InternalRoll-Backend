@@ -6,6 +6,7 @@ import com.b77.leetcodeapi.leetcodeapi.model.UserSubmissionCalendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -38,7 +39,10 @@ public class BillboardService {
             }
         }
 
-        BillboardReturn billboardReturn = new BillboardReturn();
+        BillboardReturn billboardReturn = BillboardReturn.builder()
+                .leetcodeDate(LocalDateTime.now().plusHours(userStatService.getDIFF_TO_UTC()).toLocalDate())
+                .billEntryList(new ArrayList<>())
+                .build();
         while(!pq.isEmpty()){
             billboardReturn.getBillEntryList().add(pq.poll());
         }

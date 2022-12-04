@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/helloworld")
 public class HelloWorldController {
 
-    @GetMapping("/helloworld")
+    @GetMapping()
     public String helloWorld(){
         return "HelloWorld!";
     }

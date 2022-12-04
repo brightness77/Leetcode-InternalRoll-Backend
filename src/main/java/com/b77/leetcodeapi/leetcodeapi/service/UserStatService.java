@@ -23,6 +23,13 @@ public class UserStatService {
     //config data
     private final LocalDate STARTDATE = LocalDate.parse("1970-01-01");
 
+    private final int DIFF_TO_UTC = 0;
+
+
+    public int getDIFF_TO_UTC(){
+        return DIFF_TO_UTC;
+    }
+
 
     public void getUserStatsByUsername(String username){
 
@@ -49,8 +56,8 @@ public class UserStatService {
 
         List<Submission> subs = calendar.getSubmissionList();
 
-        LocalDate curDate = LocalDateTime.now().plusHours(7).toLocalDate();
-        LocalDate nowDate = LocalDateTime.now().plusHours(7).toLocalDate();
+        LocalDate curDate = LocalDateTime.now().plusHours(DIFF_TO_UTC).toLocalDate();
+        LocalDate nowDate = LocalDateTime.now().plusHours(DIFF_TO_UTC).toLocalDate();
         int i = subs.size() - 1;
 
         while(curDate.plusDays(days).isAfter(nowDate) || curDate.plusDays(days).isEqual(nowDate)){

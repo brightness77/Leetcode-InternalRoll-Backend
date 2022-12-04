@@ -1,3 +1,5 @@
 # Leetcode-Internal Roll Backend
-Simple Dumb Leetcode Interface for Internal Rolling!!!!
+
+Leetcode backend for problems, stats and user submission query.
+
 Roll and Run!!!
