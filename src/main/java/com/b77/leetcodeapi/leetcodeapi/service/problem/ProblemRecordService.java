@@ -51,13 +51,6 @@ public class ProblemRecordService {
     }
 
 
-
-    public ProblemSolveRecord getProblemSolveRecordById(long id){
-        return problemSolveRecordRepository.getReferenceById(id);
-    }
-
-
-
     public List<ProblemEntry> getRandomProblems(ProblemQueryRequest request){
         //WIP
         return null;
@@ -179,60 +172,24 @@ public class ProblemRecordService {
         return problemRecord;
     }
 
-    //old method of no proficiency input
-    public ProblemSolveRecord createProblemSolveRecord(ProblemRecord problemRecord){
-        return createProblemSolveRecord(problemRecord, 0);
-    }
 
-    public ProblemSolveRecord createProblemSolveRecord( UserEntry userEntry, ProblemEntry problemEntry, int proficiency){
+    public List<ProblemRecord> getAllProblemRecordOfUser(UserEntry userEntry){
+        List<ProblemRecord> problemRecordList = problemRecordRepository.getByUserEntry(userEntry);
 
-        //get problem record first
-        ProblemRecord problemRecord = this.getProblemRecord(userEntry, problemEntry);
+        //sort by frontend id
+        Comparator<ProblemRecord> myComp = new Comparator<ProblemRecord>() {
+            @Override
+            public int compare(ProblemRecord o1, ProblemRecord o2) {
+                return o1.getProblemEntry().getFrontendID() - o2.getProblemEntry().getFrontendID();
+            }
+        };
 
-        return createProblemSolveRecord(problemRecord, proficiency);
-    }
+        Collections.sort(problemRecordList, myComp);
 
-
-    public ProblemSolveRecord createProblemSolveRecord(ProblemRecord problemRecord, int proficiency){
-        ProblemSolveRecord problemSolveRecord = ProblemSolveRecord.builder()
-                .utcStartTime(LocalDateTime.now())
-                .utcEndTime(LocalDateTime.now())
-                .proficiency(proficiency)
-                .problemRecord(problemRecord)
-                .build();
-
-        problemSolveRecordRepository.save(problemSolveRecord);
-
-        return problemSolveRecord;
+        return problemRecordList;
     }
 
 
-
-    public List<ProblemSolveRecord> getAllProblemSolveRecordByProblem(UserEntry userEntry, ProblemEntry problemEntry){
-        //get problem record first
-        ProblemRecord problemRecord = this.getProblemRecord(userEntry, problemEntry);
-
-        return getAllProblemSolveRecordByProblem(problemRecord);
-    }
-
-
-
-
-    public List<ProblemSolveRecord> getAllProblemSolveRecordByProblem(ProblemRecord problemRecord){
-        List<ProblemSolveRecord> problemSolveRecordList = problemSolveRecordRepository.getByProblemRecord(problemRecord);
-
-        return problemSolveRecordList;
-    }
-
-
-
-    public ProblemRecord updateProblemSolveRecord(ProblemSolveRecord problemSolveRecord, UserEntry userEntry, int proficiency){
-
-        problemSolveRecord.setProficiency(proficiency);
-        problemSolveRecordRepository.save(problemSolveRecord);
-
-        return this.getProblemRecord(problemSolveRecord);
-    }
 
 
 

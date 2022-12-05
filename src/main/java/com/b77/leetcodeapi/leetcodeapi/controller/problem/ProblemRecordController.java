@@ -6,6 +6,7 @@ import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemSolveRecord;
 import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.service.leetcode.LeetcodeProblemService;
 import com.b77.leetcodeapi.leetcodeapi.service.problem.ProblemRecordService;
+import com.b77.leetcodeapi.leetcodeapi.service.problem.ProblemSolveRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +26,9 @@ public class ProblemRecordController {
     @Autowired
     ProblemRecordService problemRecordService;
 
+    @Autowired
+    ProblemSolveRecordService problemSolveRecordService;
+
 
     @GetMapping("/{titleSlug}")
     public ProblemRecord getProblemRecord(
@@ -43,7 +47,7 @@ public class ProblemRecordController {
 
     @GetMapping("/allRecord")
     public List<ProblemRecord> getAllProblemRecord(@AuthenticationPrincipal UserEntry userEntry){
-        return null;
+        return problemRecordService.getAllProblemRecordOfUser(userEntry);
     }
 
 
@@ -64,7 +68,7 @@ public class ProblemRecordController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid proficiency!");
         }
 
-        ProblemSolveRecord solveRecord = problemRecordService.createProblemSolveRecord(userEntry, problemEntry, proficiency);
+        ProblemSolveRecord solveRecord = problemSolveRecordService.createProblemSolveRecord(userEntry, problemEntry, proficiency);
 
         return solveRecord;
     }
@@ -82,7 +86,7 @@ public class ProblemRecordController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Problem does not exists!");
         }
 
-        List<ProblemSolveRecord> solveRecordList = problemRecordService.getAllProblemSolveRecordByProblem(userEntry, problemEntry);
+        List<ProblemSolveRecord> solveRecordList = problemSolveRecordService.getAllProblemSolveRecordOfProblem(userEntry, problemEntry);
 
         if(solveRecordList == null){
             solveRecordList = new ArrayList<>();
@@ -91,27 +95,5 @@ public class ProblemRecordController {
         return solveRecordList;
     }
 
-
-
-
-    @GetMapping("/{titleSlug}/updatesolve")
-    public ProblemRecord updateProblemSolveRecord(
-            @RequestParam(name = "problemRecordSolveId", required = true) long problemRecordSolveID,
-            @RequestParam(name = "proficiency", required = true) int proficiency,
-            @AuthenticationPrincipal UserEntry userEntry){
-
-        //check valid problem solve record id
-        ProblemSolveRecord problemSolveRecord = problemRecordService.getProblemSolveRecordById(problemRecordSolveID);
-        if(problemSolveRecord == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid problem solve record id");
-        }
-
-        //check current solve record belongs to current user
-        if(problemSolveRecord.getProblemRecord().getUserEntry().getId() != userEntry.getId()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot update problem record of another user!");
-        }
-
-        return problemRecordService.updateProblemSolveRecord(problemSolveRecord, userEntry, proficiency);
-    }
 
 }
