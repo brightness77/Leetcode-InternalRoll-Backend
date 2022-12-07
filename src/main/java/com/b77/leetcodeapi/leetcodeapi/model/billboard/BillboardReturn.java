@@ -16,4 +16,6 @@ public class BillboardReturn {
 
     List<BillboardEntry> billEntryList;
 
+    LocalDateTime timeStamp;
+
 }
