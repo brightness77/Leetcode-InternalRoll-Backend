@@ -1,7 +1,7 @@
 package com.b77.leetcodeapi.leetcodeapi.handler;
 
 
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

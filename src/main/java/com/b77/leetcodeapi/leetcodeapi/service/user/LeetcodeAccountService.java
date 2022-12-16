@@ -1,9 +1,8 @@
 package com.b77.leetcodeapi.leetcodeapi.service.user;
 
-import com.b77.leetcodeapi.leetcodeapi.model.user.LeetcodeAccount;
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.LeetcodeAccount;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.repository.user.LeetcodeAccountRepository;
-import com.b77.leetcodeapi.leetcodeapi.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +27,12 @@ public class LeetcodeAccountService {
         leetcodeAccountRepository.save(leetcodeAccount);
 
         return leetcodeAccount;
+    }
+
+
+    public LeetcodeAccount deleteLeetcodeAccount(LeetcodeAccount leetcodeAccount){
+        LeetcodeAccount deleted = leetcodeAccountRepository.removeById(leetcodeAccount.getId());
+        return deleted;
     }
 
 

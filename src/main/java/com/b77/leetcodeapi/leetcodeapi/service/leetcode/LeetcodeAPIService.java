@@ -137,6 +137,15 @@ public class LeetcodeAPIService {
     }
 
 
+    public String getAllQuestionCount(){
+
+        String queryString = String.format("{\"query\":\"query " +
+                "{ allQuestionsCount { difficulty count }} \" } ");
+
+        return queryFromGraphQL(queryString);
+    }
+
+
 
     //================== PRIVATE METHODS =====================
 
@@ -182,6 +191,8 @@ public class LeetcodeAPIService {
 
             //get response
             String responseString = response.body().string();
+
+            //System.out.println("Response string is " + responseString);
 
             //error handling
             //returning type is html page

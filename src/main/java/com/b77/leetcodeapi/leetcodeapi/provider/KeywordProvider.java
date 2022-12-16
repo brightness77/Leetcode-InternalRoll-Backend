@@ -290,6 +290,8 @@ public class KeywordProvider {
             "json",
             "keybase.txt",
             "learn",
+            "leetcode",
+            "leet-code",
             "legal",
             "license",
             "licensing",

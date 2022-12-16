@@ -1,13 +1,13 @@
 package com.b77.leetcodeapi.leetcodeapi.service.leetcode;
 
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemEntry;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.TopicTag;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.TopicTag;
+import com.b77.leetcodeapi.leetcodeapi.configuration.LeetcodeConfig;
 import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemRepository;
-import com.b77.leetcodeapi.leetcodeapi.repository.problem.TopicTagRepository;
+import com.b77.leetcodeapi.leetcodeapi.repository.tag.TopicTagRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.vm.ci.meta.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,20 +27,17 @@ public class LeetcodeProblemService {
     @Autowired
     LeetcodeAPIService leetcodeAPIService;
 
+    @Autowired
+    LeetcodeConfig leetcodeConfig;
 
 
+    // ========== private field ==========
 
-    // ========== config data ==========
+    private int totalEasy;
 
-    private final String[] CATEGORIES = {
-            "algorithms",
-            "database" ,
-            "shell"};
+    private int totalMedium;
 
-    //Interval is in hours
-    private final int PROBLEM_UPDATE_INTERVAL = 6;
-    private final int TOPIC_UPDATE_INTERVAL = 24;
-
+    private int totalHard;
 
 
 
@@ -50,7 +47,7 @@ public class LeetcodeProblemService {
 
     public void updateNewProblems(){
 
-        for(String category: CATEGORIES){
+        for(String category: leetcodeConfig.getCATEGORIES()){
 
             //query for all problems list
             String jsonString = leetcodeAPIService.getProblemsByCategory(category);
@@ -121,7 +118,7 @@ public class LeetcodeProblemService {
         System.out.println("Trying to updating problem " + problemEntry.getFrontendID() + ". " + problemEntry.getTitle());
 
         if(problemEntry.getTimeStamp() == null ||
-                problemEntry.getTimeStamp().plusHours(PROBLEM_UPDATE_INTERVAL).isAfter(LocalDateTime.now()) ||
+                problemEntry.getTimeStamp().plusHours(leetcodeConfig.getPROBLEM_UPDATE_INTERVAL()).isAfter(LocalDateTime.now()) ||
                 isForced
         ){
             //update problem
@@ -155,16 +152,16 @@ public class LeetcodeProblemService {
 
 
 
-    public void getAllQuestionCount(){
-        String queryString = String.format("{\"query\":\"query { allQuestionsCount { difficulty count } }");
+    public int[] getAllQuestionCount(){
 
-        String jsonString = leetcodeAPIService.queryFromGraphQL(queryString);
+        String jsonString = leetcodeAPIService.getAllQuestionCount();
 
         if("Error".equals(jsonString)){
-            //error status
+            return null;
         }
 
         ObjectMapper mapper = new ObjectMapper();
+        int[] result = new int[4];
 
         try {
             JsonNode rootNode = mapper.readTree(jsonString);
@@ -175,9 +172,16 @@ public class LeetcodeProblemService {
             int mediumCount = countNode.get(2).get("count").asInt(0);
             int hardCount = countNode.get(3).get("count").asInt(0);
 
+            result[0] = allCount;
+            result[1] = easyCount;
+            result[2] = mediumCount;
+            result[3] = hardCount;
+
         } catch (JsonProcessingException exception){
 
         }
+
+        return result;
     }
 
 
@@ -296,7 +300,7 @@ public class LeetcodeProblemService {
         System.out.println("Updating topic tag " + name);
 
         //check time
-        if (topicTag.getTimeStamp() != null && topicTag.getTimeStamp().plusHours(TOPIC_UPDATE_INTERVAL).isAfter(LocalDateTime.now())) {
+        if (topicTag.getTimeStamp() != null && topicTag.getTimeStamp().plusHours(leetcodeConfig.getTOPIC_UPDATE_INTERVAL()).isAfter(LocalDateTime.now())) {
             //if it is updated within interval
             return topicTag;
         }

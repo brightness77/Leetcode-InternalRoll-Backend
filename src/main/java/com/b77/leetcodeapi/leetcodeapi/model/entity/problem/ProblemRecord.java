@@ -1,15 +1,15 @@
-package com.b77.leetcodeapi.leetcodeapi.model.problem;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.problem;
 
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 
 @Entity(name = "problem_record")
@@ -48,6 +48,7 @@ public class ProblemRecord {
 
     @ManyToOne()
     @JoinColumn(name = "problem_id")
+    @JsonManagedReference("problemEntry-problemRecord")
     private ProblemEntry problemEntry;
 
 }

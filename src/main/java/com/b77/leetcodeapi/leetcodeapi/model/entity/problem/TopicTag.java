@@ -1,7 +1,6 @@
-package com.b77.leetcodeapi.leetcodeapi.model.problem;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.problem;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

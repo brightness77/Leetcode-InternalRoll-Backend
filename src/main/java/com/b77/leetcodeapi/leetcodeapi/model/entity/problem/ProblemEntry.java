@@ -1,16 +1,17 @@
-package com.b77.leetcodeapi.leetcodeapi.model.problem;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.problem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 
@@ -78,6 +79,9 @@ public class ProblemEntry {
 //    @ManyToMany(mappedBy = "origProblem")
 //    List<ProblemEntry> similarProblems;
 
+    @OneToMany(mappedBy = "problemEntry")
+    @JsonBackReference("problemEntry-problemRecord")
+    List<ProblemRecord> problemRecordList;
 
 
     //========== Not provided now ==========

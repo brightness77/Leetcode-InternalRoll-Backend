@@ -1,19 +1,15 @@
 package com.b77.leetcodeapi.leetcodeapi.controller.user;
 
 import com.b77.leetcodeapi.leetcodeapi.model.request.CreateUserRequest;
-import com.b77.leetcodeapi.leetcodeapi.model.user.Admin;
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.response.UserDiffACResponse;
 import com.b77.leetcodeapi.leetcodeapi.provider.KeywordProvider;
-import com.b77.leetcodeapi.leetcodeapi.service.user.AdminService;
 import com.b77.leetcodeapi.leetcodeapi.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.annotation.security.RolesAllowed;
-import java.util.List;
 
 
 @RestController
@@ -24,18 +20,18 @@ public class UserController {
     UserService userService;
 
 
-    @Autowired
-    KeywordProvider keywordProvider;
-
-
-
 
 
     @PostMapping("/create")
     public UserEntry createUser(@RequestBody CreateUserRequest createUserRequest){
 
+        //bad username input check
+        if(!userService.isValidUsername(createUserRequest.getUsername())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad username");
+        }
+
         //existing username check
-        if(userService.getUserByUsername(createUserRequest.getUsername()) != null){
+        if(userService.isUsernameUsed(createUserRequest.getUsername())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
 
@@ -44,12 +40,8 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
-        //blocklist username check
-        if(keywordProvider.getUsernameBlockSet().contains(createUserRequest.getUsername())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad username");
-        }
-
         return userService.createUser(createUserRequest.getUsername(), createUserRequest.getPassword(), createUserRequest.getEmail(), createUserRequest.getClientHost());
+
     }
 
 
@@ -75,6 +67,18 @@ public class UserController {
         }
 
         return userEntry;
+    }
+
+
+    @GetMapping("/acstats/{username}")
+    public UserDiffACResponse getUserACStats(@PathVariable String username) {
+        UserEntry userEntry = userService.getUserByUsername(username);
+
+        if(userEntry == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username not found");
+        }
+
+        return userService.getUserDiffACResponse(userEntry);
     }
 
 

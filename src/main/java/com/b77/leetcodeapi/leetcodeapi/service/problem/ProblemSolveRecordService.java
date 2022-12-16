@@ -1,15 +1,17 @@
 package com.b77.leetcodeapi.leetcodeapi.service.problem;
 
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemEntry;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemRecord;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemSolveRecord;
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemRecord;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemSolveRecord;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemSolveRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class ProblemSolveRecordService {
@@ -51,6 +53,9 @@ public class ProblemSolveRecordService {
 
         problemSolveRecordRepository.save(problemSolveRecord);
 
+        //always update problem record when modifying problem solve record!
+        problemRecordService.updateProblemRecord(problemSolveRecord.getProblemRecord());
+
         return problemSolveRecord;
     }
 
@@ -71,5 +76,6 @@ public class ProblemSolveRecordService {
 
         return problemSolveRecordList;
     }
+
 
 }

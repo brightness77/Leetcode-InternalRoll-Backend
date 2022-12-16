@@ -1,4 +1,4 @@
-package com.b77.leetcodeapi.leetcodeapi.model.billboard;
+package com.b77.leetcodeapi.leetcodeapi.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

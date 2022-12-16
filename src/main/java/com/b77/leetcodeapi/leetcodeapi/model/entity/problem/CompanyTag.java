@@ -1,4 +1,4 @@
-package com.b77.leetcodeapi.leetcodeapi.model.problem;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.problem;
 
 import javax.persistence.Entity;
 

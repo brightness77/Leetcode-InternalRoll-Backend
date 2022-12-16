@@ -1,9 +1,8 @@
 package com.b77.leetcodeapi.leetcodeapi.service;
 
-import com.b77.leetcodeapi.leetcodeapi.model.billboard.BillboardEntry;
-import com.b77.leetcodeapi.leetcodeapi.model.billboard.BillboardReturn;
+import com.b77.leetcodeapi.leetcodeapi.model.BillboardEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.response.BillboardReturn;
 import com.b77.leetcodeapi.leetcodeapi.model.UserSubmissionCalendar;
-import jdk.vm.ci.meta.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

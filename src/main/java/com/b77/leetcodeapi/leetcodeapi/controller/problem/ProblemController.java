@@ -1,14 +1,10 @@
 package com.b77.leetcodeapi.leetcodeapi.controller.problem;
 
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemEntry;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemRecord;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemSolveRecord;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemEntry;
 import com.b77.leetcodeapi.leetcodeapi.model.request.ProblemQueryRequest;
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
-import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemSolveRecordRepository;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.service.leetcode.LeetcodeProblemService;
 import com.b77.leetcodeapi.leetcodeapi.service.problem.ProblemRecordService;
-import com.b77.leetcodeapi.leetcodeapi.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/problem")

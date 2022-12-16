@@ -1,6 +1,6 @@
 package com.b77.leetcodeapi.leetcodeapi.controller;
 
-import com.b77.leetcodeapi.leetcodeapi.model.billboard.BillboardReturn;
+import com.b77.leetcodeapi.leetcodeapi.model.response.BillboardReturn;
 import com.b77.leetcodeapi.leetcodeapi.service.BillboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,22 +1,18 @@
 package com.b77.leetcodeapi.leetcodeapi.service.problem;
 
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemEntry;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemRecord;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemSolveRecord;
-import com.b77.leetcodeapi.leetcodeapi.model.problem.TopicTag;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.*;
 import com.b77.leetcodeapi.leetcodeapi.model.request.ProblemQueryRequest;
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemRecordRepository;
 import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemRepository;
 import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemSolveRecordRepository;
-import com.b77.leetcodeapi.leetcodeapi.repository.problem.TopicTagRepository;
-import com.b77.leetcodeapi.leetcodeapi.service.leetcode.LeetcodeAPIService;
+import com.b77.leetcodeapi.leetcodeapi.repository.user.UserRepository;
 import com.b77.leetcodeapi.leetcodeapi.service.leetcode.LeetcodeProblemService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,19 +24,22 @@ import java.util.*;
 public class ProblemRecordService {
 
     @Autowired
-    LeetcodeProblemService leetcodeProblemService;
+    private LeetcodeProblemService leetcodeProblemService;
 
     @Autowired
-    ProblemRepository problemRepository;
+    private TopicTagService topicTagService;
 
     @Autowired
-    TopicTagRepository topicTagRepository;
+    private ProblemRepository problemRepository;
 
     @Autowired
-    ProblemRecordRepository problemRecordRepository;
+    private ProblemRecordRepository problemRecordRepository;
 
     @Autowired
-    ProblemSolveRecordRepository problemSolveRecordRepository;
+    private ProblemSolveRecordRepository problemSolveRecordRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     // ========== public method ==========
@@ -91,7 +90,7 @@ public class ProblemRecordService {
                 boolean match = false;
 
                 for(String topicTagName: request.getTopicTags()){
-                    TopicTag queriedTopicTag = topicTagRepository.getByName(topicTagName);
+                    TopicTag queriedTopicTag = topicTagService.getTopicTagByName(topicTagName);
                     if(problemEntry.getTopicTags().contains(queriedTopicTag)){
                         //System.out.println("Contains topic tag " + queriedTopicTag.getName());
                         match = true;
@@ -164,61 +163,53 @@ public class ProblemRecordService {
         if(problemRecord == null){
             //need to create one
             problemRecord = this.createProblemRecord(userEntry, problemEntry);
-        } else {
-            //need to update record
-            problemRecord = this.updateProblemRecord(problemRecord);
         }
 
+        //return the existing one
         return problemRecord;
     }
 
 
+    public Page<ProblemRecord> getAllProblemRecordOfUser(UserEntry userEntry, int page, int size){
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("problemEntry.frontendID").ascending());
+
+        Page<ProblemRecord> problemRecordList = problemRecordRepository.getByUserEntryAndAcceptedCountIsGreaterThan(userEntry, 0, pageable);
+
+        return problemRecordList;
+    }
+
+
     public List<ProblemRecord> getAllProblemRecordOfUser(UserEntry userEntry){
-        List<ProblemRecord> problemRecordList = problemRecordRepository.getByUserEntry(userEntry);
 
-        //sort by frontend id
-        Comparator<ProblemRecord> myComp = new Comparator<ProblemRecord>() {
-            @Override
-            public int compare(ProblemRecord o1, ProblemRecord o2) {
-                return o1.getProblemEntry().getFrontendID() - o2.getProblemEntry().getFrontendID();
-            }
-        };
+        List<ProblemRecord> problemRecordList = problemRecordRepository.getByUserEntryAndAcceptedCountIsGreaterThan(userEntry, 0);
 
-        Collections.sort(problemRecordList, myComp);
+        return problemRecordList;
+    }
+
+
+    public Page<ProblemRecord> getAllProblemRecordOfUserByTopicTag(UserEntry userEntry, int page, int size, String topicTagName){
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("problemEntry.frontendID").ascending());
+        TopicTag topicTag = topicTagService.getTopicTagByName(topicTagName);
+
+        Page<ProblemRecord> problemRecordList = problemRecordRepository.getByUserAndTopicTag(userEntry.getId(), topicTag.getId(), pageable);
 
         return problemRecordList;
     }
 
 
 
+    public List<ProblemRecord> getAllProblemRecordOfUserByTopicTag(UserEntry userEntry, TopicTag topicTag){
 
+        List<ProblemRecord> problemRecordList = problemRecordRepository.getByUserAndTopicTag(userEntry.getId(), topicTag.getId());
 
-
-    //================== PRIVATE METHODS ====================
-
-
-
-    private ProblemRecord getProblemRecord(ProblemSolveRecord problemSolveRecord){
-        return this.getProblemRecord(problemSolveRecord.getProblemRecord().getUserEntry(), problemSolveRecord.getProblemRecord().getProblemEntry());
+        return problemRecordList;
     }
 
 
-    private ProblemRecord createProblemRecord(UserEntry userEntry, ProblemEntry problemEntry){
-        ProblemRecord problemRecord = ProblemRecord.builder()
-                    .acceptedCount(0L)
-                    .sumProficiency(0L)
-                    .averageProficiency(0.0)
-                    .recentProficiency(0)
-                    .userEntry(userEntry)
-                    .problemEntry(problemEntry)
-                    .build();
 
-        problemRecordRepository.save(problemRecord);
-        return problemRecord;
-    }
-
-
-    private ProblemRecord updateProblemRecord(ProblemRecord problemRecord){
+    public ProblemRecord updateProblemRecord(ProblemRecord problemRecord){
 
         List<ProblemSolveRecord> problemSolveRecordList = problemSolveRecordRepository.getByProblemRecord(problemRecord);
 
@@ -252,8 +243,78 @@ public class ProblemRecordService {
         }
 
         problemRecordRepository.save(problemRecord);
+
+        //update topic record
+        for(TopicTag topicTag: problemRecord.getProblemEntry().getTopicTags()){
+
+            List<ProblemRecord> problemRecordList = this.getAllProblemRecordOfUserByTopicTag(problemRecord.getUserEntry(), topicTag);
+            //update topic tag record
+            topicTagService.updateTopicRecord(problemRecord.getUserEntry(), topicTag, problemRecordList);
+        }
+
+        //update user stats
+        this.updateUserStats(problemRecord.getUserEntry());
+
         return problemRecord;
     }
+
+
+
+
+
+
+    //================== PRIVATE METHODS ====================
+
+
+
+    private ProblemRecord getProblemRecord(ProblemSolveRecord problemSolveRecord){
+        return this.getProblemRecord(problemSolveRecord.getProblemRecord().getUserEntry(), problemSolveRecord.getProblemRecord().getProblemEntry());
+    }
+
+
+    private ProblemRecord createProblemRecord(UserEntry userEntry, ProblemEntry problemEntry){
+        ProblemRecord problemRecord = ProblemRecord.builder()
+                    .acceptedCount(0L)
+                    .sumProficiency(0L)
+                    .averageProficiency(0.0)
+                    .recentProficiency(0)
+                    .userEntry(userEntry)
+                    .problemEntry(problemEntry)
+                    .build();
+
+        problemRecordRepository.save(problemRecord);
+
+        //no need to create topic record here as we create all at once
+
+        return problemRecord;
+    }
+
+
+    private void updateUserStats(UserEntry userEntry){
+        //System.out.println("Updating user stats");
+        List<ProblemRecord> problemRecordList = this.getAllProblemRecordOfUser(userEntry);
+
+        int easy = 0, medium = 0, hard = 0;
+        for(ProblemRecord problemRecord: problemRecordList){
+            if(problemRecord.getProblemEntry().getDifficulty() == 1){
+                easy++;
+            } else if(problemRecord.getProblemEntry().getDifficulty() == 2){
+                medium++;
+            } else {
+                hard++;
+            }
+        }
+
+        userEntry.setEasyAC(easy);
+        userEntry.setMediumAC(medium);
+        userEntry.setHardAC(hard);
+        userEntry.setAllAC(problemRecordList.size());
+
+        userRepository.save(userEntry);
+    }
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-package com.b77.leetcodeapi.leetcodeapi.model.user;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.user;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -9,12 +9,14 @@ import javax.validation.constraints.NotEmpty;
 
 
 @Entity(name = "leetcode_account")
-@Table(name = "leetcode_account", indexes = {})
+@Table(name = "leetcode_account", indexes = {
+        @Index(name = "account_user_index", columnList = "leetcodeAccountName, user_id", unique = true)})
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode
 
 public class LeetcodeAccount {
 
@@ -25,12 +27,12 @@ public class LeetcodeAccount {
     private long id;
 
     @NotEmpty
-    @Column(nullable = false)
+    @Column(nullable = false, unique = false)
     private String leetcodeAccountName;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-    @JsonBackReference()
+    @JsonBackReference("user_leetcodeAccount")
     private UserEntry userEntry;
 
     //String leetcode_accountName;

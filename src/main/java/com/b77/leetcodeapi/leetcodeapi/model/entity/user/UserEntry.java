@@ -1,6 +1,7 @@
-package com.b77.leetcodeapi.leetcodeapi.model.user;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.user;
 
-import com.b77.leetcodeapi.leetcodeapi.model.problem.ProblemRecord;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemRecord;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -30,13 +31,14 @@ import java.util.List;
 @ToString(exclude = {"password"})
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 
 public class UserEntry implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private long id;
+    private Long id;
 
     @NotNull(message = "Email cannot be empty")
     @Column(nullable = false)
@@ -56,10 +58,23 @@ public class UserEntry implements UserDetails {
     private LocalDateTime utcRegisterTime;
 
     @OneToMany(mappedBy = "userEntry", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("user_leetcodeAccount")
     private List<LeetcodeAccount> leetcodeAccounts;
 
     private InetAddress registerIPAddress;
+
+    private String nickname;
+
+    private String adminNickname;
+
+    //ac count
+    private Integer easyAC;
+
+    private Integer mediumAC;
+
+    private Integer hardAC;
+
+    private Integer allAC;
 
 
 

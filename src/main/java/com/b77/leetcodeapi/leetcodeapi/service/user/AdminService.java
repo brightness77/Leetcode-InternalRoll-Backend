@@ -1,7 +1,7 @@
 package com.b77.leetcodeapi.leetcodeapi.service.user;
 
-import com.b77.leetcodeapi.leetcodeapi.model.user.Admin;
-import com.b77.leetcodeapi.leetcodeapi.model.user.UserEntry;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.Admin;
+import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.repository.user.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

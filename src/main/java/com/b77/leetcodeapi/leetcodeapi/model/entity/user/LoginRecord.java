@@ -1,6 +1,5 @@
-package com.b77.leetcodeapi.leetcodeapi.model.user;
+package com.b77.leetcodeapi.leetcodeapi.model.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

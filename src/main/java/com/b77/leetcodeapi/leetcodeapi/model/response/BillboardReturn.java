@@ -1,11 +1,11 @@
-package com.b77.leetcodeapi.leetcodeapi.model.billboard;
+package com.b77.leetcodeapi.leetcodeapi.model.response;
 
+import com.b77.leetcodeapi.leetcodeapi.model.BillboardEntry;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
