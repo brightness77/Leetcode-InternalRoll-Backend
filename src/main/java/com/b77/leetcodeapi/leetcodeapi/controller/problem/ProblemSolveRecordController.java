@@ -6,6 +6,7 @@ import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.service.leetcode.LeetcodeProblemService;
 import com.b77.leetcodeapi.leetcodeapi.service.problem.ProblemSolveRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ProblemSolveRecordController {
 
 
 
-    @PostMapping("/{titleSlug}/createSolve")
+    @PostMapping("/createsolve/{titleSlug}")
     public ProblemSolveRecord createProblemSolveRecord(
             @PathVariable(name = "titleSlug") String problemTitleSlug,
             @RequestParam(name = "proficiency", required = true) int proficiency,
@@ -50,24 +51,20 @@ public class ProblemSolveRecordController {
 
 
 
-    @GetMapping("/{titleSlug}/allSolves")
-    public List<ProblemSolveRecord> getAllProblemSolveRecord(
+    @GetMapping("/allsolves/{titleSlug}")
+    public Page<ProblemSolveRecord> getAllProblemSolveRecord(
             @PathVariable(name = "titleSlug") String problemTitleSlug,
-            @AuthenticationPrincipal UserEntry userEntry){
+            @AuthenticationPrincipal UserEntry userEntry,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size
+    ){
 
-        //check valid title slug
         ProblemEntry problemEntry =  leetcodeProblemService.getProblemByTitleSlug(problemTitleSlug);
         if(problemEntry == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Problem does not exists!");
         }
 
-        List<ProblemSolveRecord> solveRecordList = problemSolveRecordService.getAllProblemSolveRecordOfProblem(userEntry, problemEntry);
-
-        if(solveRecordList == null){
-            solveRecordList = new ArrayList<>();
-        }
-
-        return solveRecordList;
+        return problemSolveRecordService.getAllProblemSolveRecordOfUserAndProblem(userEntry, problemEntry, page, size);
     }
 
 }

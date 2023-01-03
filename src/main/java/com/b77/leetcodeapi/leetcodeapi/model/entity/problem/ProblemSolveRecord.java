@@ -2,6 +2,7 @@ package com.b77.leetcodeapi.leetcodeapi.model.entity.problem;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,7 +46,7 @@ public class ProblemSolveRecord {
 
     @ManyToOne()
     @JoinColumn(name = "problem_record_id")
-    @JsonIgnore
+    //@JsonManagedReference("problemSolveRecord_problemRecord")
     ProblemRecord problemRecord;
 
     // ========== mapped relationships ==========

@@ -6,6 +6,10 @@ import com.b77.leetcodeapi.leetcodeapi.model.entity.problem.ProblemSolveRecord;
 import com.b77.leetcodeapi.leetcodeapi.model.entity.user.UserEntry;
 import com.b77.leetcodeapi.leetcodeapi.repository.problem.ProblemSolveRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,6 +47,7 @@ public class ProblemSolveRecordService {
     }
 
 
+
     public ProblemSolveRecord createProblemSolveRecord(ProblemRecord problemRecord, int proficiency){
         ProblemSolveRecord problemSolveRecord = ProblemSolveRecord.builder()
                 .utcStartTime(LocalDateTime.now())
@@ -61,20 +66,38 @@ public class ProblemSolveRecordService {
 
 
 
-    public List<ProblemSolveRecord> getAllProblemSolveRecordOfProblem(UserEntry userEntry, ProblemEntry problemEntry){
+    public List<ProblemSolveRecord> getAllProblemSolveRecordOfUserAndProblem(UserEntry userEntry, ProblemEntry problemEntry){
         //get problem record first
         ProblemRecord problemRecord = problemRecordService.getProblemRecord(userEntry, problemEntry);
 
-        return getAllProblemSolveRecordOfProblem(problemRecord);
+        return getAllProblemSolveRecordOfProblemRecord(problemRecord);
+    }
+
+
+    public Page<ProblemSolveRecord> getAllProblemSolveRecordOfUserAndProblem(UserEntry userEntry, ProblemEntry problemEntry, int page, int size){
+        //get problem record first
+        ProblemRecord problemRecord = problemRecordService.getProblemRecord(userEntry, problemEntry);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("utcEndTime").descending());
+
+        return problemSolveRecordRepository.getByProblemRecord(problemRecord, pageable);
     }
 
 
 
-
-    public List<ProblemSolveRecord> getAllProblemSolveRecordOfProblem(ProblemRecord problemRecord){
+    public List<ProblemSolveRecord> getAllProblemSolveRecordOfProblemRecord(ProblemRecord problemRecord){
         List<ProblemSolveRecord> problemSolveRecordList = problemSolveRecordRepository.getByProblemRecord(problemRecord);
 
         return problemSolveRecordList;
+    }
+
+
+
+    public Page<ProblemSolveRecord> getSolveRecordOfUser(UserEntry userEntry, int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("utcEndTime").descending());
+
+        Page<ProblemSolveRecord> problemSolveRecords = problemSolveRecordRepository.getByUser(userEntry.getId(), pageable);
+
+        return problemSolveRecords;
     }
 
 

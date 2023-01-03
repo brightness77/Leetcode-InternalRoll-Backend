@@ -166,7 +166,7 @@ public class UserService implements UserDetailsService {
         updateTotalCount();
 
         UserDiffACResponse userDiffACResponse = UserDiffACResponse.builder()
-                .easyTotal(leetcodeData.getTotalAll())
+                .easyTotal(leetcodeData.getTotalEasy())
                 .mediumTotal(leetcodeData.getTotalMedium())
                 .hardTotal(leetcodeData.getTotalHard())
                 .allTotal(leetcodeData.getTotalAll())
@@ -179,6 +179,12 @@ public class UserService implements UserDetailsService {
 
         return userDiffACResponse;
 
+    }
+
+
+
+    public void getUserRecentSolveCount(UserEntry userEntry, int days){
+        //WIP
     }
 
 
